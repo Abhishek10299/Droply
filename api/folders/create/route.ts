@@ -3,7 +3,7 @@ import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq, and } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
-import { v4 as uuidv4} from "uuid"
+import { v4 as uuidv4 } from "uuid";
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
@@ -51,25 +51,25 @@ export async function POST(request: NextRequest) {
       }
 
       const folderData = {
-        id:uuidv4(),
-        name:name.trim(),
-        path:`/folders/${userId}/${uuidv4()}`,
-        size:0,
-        type:"folder",
-        fileUrl:"",
-        thumbnailUrl:null,
+        id: uuidv4(),
+        name: name.trim(),
+        path: `/folders/${userId}/${uuidv4()}`,
+        size: 0,
+        type: "folder",
+        fileUrl: "",
+        thumbnailUrl: null,
         userId,
         parentId,
-        isFolder:true,
-        isStarred:false,
-        isTrash:false,
+        isFolder: true,
+        isStarred: false,
+        isTrash: false,
       };
       const [newFolder] = await db.insert(files).values(folderData).returning();
       return NextResponse.json({
-        success:true,
-        message:"Folder created successfully",
-        folder:newFolder 
-      })
+        success: true,
+        message: "Folder created successfully",
+        folder: newFolder,
+      });
     }
   } catch (error) {
     return NextResponse.json(
@@ -80,6 +80,5 @@ export async function POST(request: NextRequest) {
         status: 500,
       }
     );
-  
   }
 }
