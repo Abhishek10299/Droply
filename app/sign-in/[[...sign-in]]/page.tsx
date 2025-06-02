@@ -3,7 +3,7 @@ import React from "react";
 
 export default function SignInPage() {
   return (
-    <div>
+    <div className="flex justify-center items-center min-h-screen">
       <SignInForm />
     </div>
   );

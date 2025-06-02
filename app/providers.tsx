@@ -1,6 +1,5 @@
 import React from "react";
-import { ImageKitProvider } from "imagekitio-next";
-import { HeroUIProvider } from "@heroui/system";
+import { ImageKitProvider } from "@imagekit/next";
 const authenticator = async () => {
   try {
     const response = await fetch("/api/imageKit-auth");
@@ -15,11 +14,11 @@ const authenticator = async () => {
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ImageKitProvider
-      authenticator={authenticator}
-      publicKey={process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || ""}
       urlEndpoint={process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || ""}
     >
-      <HeroUIProvider>{children}</HeroUIProvider>
+      
+        {children}
+
     </ImageKitProvider>
   );
 }

@@ -1,4 +1,4 @@
-"use Client";
+"use client";
 
 import { signInSchema } from "@/schemas/signInSchema";
 import { useSignIn } from "@clerk/nextjs";
@@ -7,12 +7,19 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@heroui/button";
-import { Input } from "@heroui/input";
-import { Card, CardBody, CardHeader, CardFooter } from "@heroui/card";
-import { Divider } from "@heroui/divider";
-import { Mail, Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
+import {AlertCircle, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 export default function SignInForm() {
   const router = useRouter();
@@ -59,103 +66,87 @@ export default function SignInForm() {
   };
 
   return (
-    <Card className="w-full max-w-md border border-default-200 bg-default-50 shadow-xl">
-      <CardHeader className="flex flex-col gap-1 items-center pb-2">
-        <h1 className="text-2xl font-bold text-default-900">Welcome Back</h1>
-        <p className="text-default-500 text-center">
+    <Card className="w-full max-w-sm">
+      <CardHeader>
+        <CardTitle>Welcome Back</CardTitle>
+        <CardDescription>
           Sign in to access your secure cloud storage
-        </p>
+        </CardDescription>
       </CardHeader>
 
-      <Divider />
-
-      <CardBody className="py-6">
+      <CardContent>
         {authError && (
-          <div className="bg-danger-50 text-danger-700 p-4 rounded-lg mb-6 flex items-center gap-2">
+          <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-6 flex items-center gap-2">
             <AlertCircle className="h-5 w-5 flex-shrink-0" />
             <p>{authError}</p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-2">
-            <label
-              htmlFor="identifier"
-              className="text-sm font-medium text-default-900"
-            >
-              Email
-            </label>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+          <div className="grid gap-2">
+            <Label htmlFor="identifier">Email</Label>
             <Input
               id="identifier"
               type="email"
               placeholder="your.email@example.com"
-              startContent={<Mail className="h-4 w-4 text-default-500" />}
-              isInvalid={!!errors.identifier}
-              errorMessage={errors.identifier?.message}
               {...register("identifier")}
-              className="w-full"
+              required
             />
+            {errors.identifier && (
+              <p className="text-sm text-red-600">
+                {errors.identifier.message}
+              </p>
+            )}
           </div>
 
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <label
-                htmlFor="password"
-                className="text-sm font-medium text-default-900"
+          <div className="grid gap-2">
+            <div className="flex items-center">
+              <Label htmlFor="password">Password</Label>
+              <a
+                href="#"
+                className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
               >
-                Password
-              </label>
+                Forgot your password?
+              </a>
             </div>
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="••••••••"
-              startContent={<Lock className="h-4 w-4 text-default-500" />}
-              endContent={
-                <Button
-                  isIconOnly
-                  variant="light"
-                  size="sm"
-                  onClick={() => setShowPassword(!showPassword)}
-                  type="button"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-default-500" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-default-500" />
-                  )}
-                </Button>
-              }
-              isInvalid={!!errors.password}
-              errorMessage={errors.password?.message}
-              {...register("password")}
-              className="w-full"
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                {...register("password")}
+                required
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center text-muted-foreground"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-sm text-red-600">{errors.password.message}</p>
+            )}
           </div>
 
-          <Button
-            type="submit"
-            color="primary"
-            className="w-full"
-            isLoading={isSubmitting}
-          >
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? "Signing in..." : "Sign In"}
           </Button>
         </form>
-      </CardBody>
+      </CardContent>
 
-      <Divider />
-
-      <CardFooter className="flex justify-center py-4">
-        <p className="text-sm text-default-600">
-          Don't have an account?{" "}
-          <Link
-            href="/sign-up"
-            className="text-primary hover:underline font-medium"
-          >
+      <CardFooter className="flex-col gap-2">
+        <div className="mt-4 text-center text-sm">
+          Don&apos;t have an account?{" "}
+          <Link href="/sign-up" className="underline underline-offset-4">
             Sign up
           </Link>
-        </p>
+        </div>
       </CardFooter>
     </Card>
   );
